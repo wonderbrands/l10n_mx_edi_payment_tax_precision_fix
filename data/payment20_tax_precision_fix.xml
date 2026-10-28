@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Fix: BaseDR/ImporteDR en RetencionDR y TrasladoDR del Complemento de
+        Pago deben usar 6 decimales, igual que TasaOCuotaDR, BaseP/ImporteP
+        y los Base/Importe de la factura normal (cfdi.xml). La plantilla
+        nativa 'l10n_mx_edi.payment20' los deja con la precisión por defecto
+        de la moneda (2 decimales), lo que rompe la validación del PAC:
+        ImporteDR = BaseDR x TasaOCuotaDR con tolerancia de +-0.0000005.
+    -->
+    <template id="l10n_mx_edi_payment20_tax_precision_fix" inherit_id="l10n_mx_edi.payment20">
+        <xpath expr="//*[name()='pago20:RetencionDR']" position="attributes">
+            <attribute name="t-att-BaseDR">invoice_values['format_float'](tax_values['base'], precision=6)</attribute>
+            <attribute name="t-att-ImporteDR">invoice_values['format_float'](tax_values['importe'], precision=6)</attribute>
+        </xpath>
+        <xpath expr="//*[name()='pago20:TrasladoDR']" position="attributes">
+            <attribute name="t-att-BaseDR">invoice_values['format_float'](tax_values['base'], precision=6)</attribute>
+            <attribute name="t-att-ImporteDR">invoice_values['format_float'](tax_values['importe'], precision=6)</attribute>
+        </xpath>
+    </template>
+</odoo>
